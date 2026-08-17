@@ -1,0 +1,25 @@
+{
+  "step2_words": [
+    {
+      "id": "hi_w_001",
+      "word": "कलम",
+      "phonetics": "Kalam",
+      "meaning": "Pen",
+      "image_path": "assets/images/step2_words/pen.png",
+      "broken_down": ["क", "ल", "म"],
+      "distractors": ["घर", "नल", "कमल"]
+    }
+  ],
+  "step4_gunintalu_words": [
+    {
+      "id": "hi_gw_001",
+      "word": "किताब",
+      "phonetics": "Kitaab",
+      "meaning": "Book",
+      "image_path": "assets/images/step4_gunintalu/book.png",
+      "gunintam_breakdown": ["क + ि (कि)", "त + ा (ता)", "ब"],
+      "distractors": ["कुत्ता", "चिड़िया", "सूरज"],
+      "explanation_audio_text": "यह गलत उत्तर है। सही शब्द किताब है। क में छोटी इ की मात्रा और त में आ की मात्रा आती है।"
+    }
+  ]
+}
