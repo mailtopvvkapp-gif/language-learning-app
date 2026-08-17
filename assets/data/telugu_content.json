@@ -1,0 +1,25 @@
+{
+  "step2_words": [
+    {
+      "id": "te_w_001",
+      "word": "కలము",
+      "phonetics": "Kalamu",
+      "meaning": "Pen",
+      "image_path": "assets/images/step2_words/pen.png",
+      "broken_down": ["క", "ల", "ము"],
+      "distractors": ["వల", "పలక", "కమలము"]
+    }
+  ],
+  "step4_gunintalu_words": [
+    {
+      "id": "te_gw_001",
+      "word": "కాకి",
+      "phonetics": "Kaaki",
+      "meaning": "Crow",
+      "image_path": "assets/images/step4_gunintalu/crow.png",
+      "gunintam_breakdown": ["క + ా (కా)", "క + ి (కి)"],
+      "distractors": ["కోడి", "కుక్క", "చిలుక"],
+      "explanation_audio_text": "ఇది తప్పు. మీరు ఎంచుకున్నది {selected}. సరైన సమాధానం కాకి. కా గుణింతంలో దీర్ఘం మరియు కి గుణింతంలో గుడి వస్తాయి."
+    }
+  ]
+}
