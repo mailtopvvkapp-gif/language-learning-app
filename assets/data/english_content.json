@@ -1,0 +1,25 @@
+{
+  "step2_words": [
+    {
+      "id": "en_w_001",
+      "word": "CAT",
+      "phonetics": "Cat",
+      "meaning": "Cat",
+      "image_path": "assets/images/step2_words/cat.png",
+      "broken_down": ["C", "A", "T"],
+      "distractors": ["BAT", "RAT", "DOG"]
+    }
+  ],
+  "step4_gunintalu_words": [
+    {
+      "id": "en_gw_001",
+      "word": "SHIP",
+      "phonetics": "Ship",
+      "meaning": "Ship",
+      "image_path": "assets/images/step4_gunintalu/ship.png",
+      "gunintam_breakdown": ["SH (Diagraph)", "I", "P"],
+      "distractors": ["SHOP", "FISH", "CHIP"],
+      "explanation_audio_text": "That is incorrect. You selected {selected}. The correct word is SHIP. It begins with the SH blend sound."
+    }
+  ]
+}
