@@ -32,7 +32,7 @@ jobs:
         run: |
           mkdir -p assets/icon assets/data
           
-          # Create embedded HD App Icon directly via base64 binary
+          # Base64 embedded HD App Icon
           cat << 'EOF' > assets/icon/app_logo.png.b64
           iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAYAAACqaXHeAAAACXBIWXMAAAsTAAALEwEAmpwYAAAD
           kElEQVR4nO2bSWgUQRSGv5l4iHjE6EkRPAh4EcSLB72IigcvgnjxYMRNxAMiKiIeFBRFEfHkRdFD
@@ -52,9 +52,9 @@ jobs:
           /QeB08D3+p0P/B5Y7PSp573x/2dSZ/Rfv7MUKVKkSJHCkfgLw8Y55u1Nq5AAAAAASUVORK5CYII=
           EOF
           base64 -d assets/icon/app_logo.png.b64 > assets/icon/app_logo.png
-          rm assets/icon/app_logo.png.b64
+          rm -f assets/icon/app_logo.png.b64
 
-          # Ensure fallback JSON datasets exist if not yet added
+          # Ensure fallback data files exist
           if [ ! -f "assets/data/telugu_content.json" ]; then
             echo '{"step2_words":[], "step4_gunintalu_words":[]}' > assets/data/telugu_content.json
           fi
@@ -65,15 +65,16 @@ jobs:
             echo '{"step2_words":[], "step4_gunintalu_words":[]}' > assets/data/english_content.json
           fi
 
-      - name: Initialize Android Scaffolding
+      - name: Force Clean Recreate Android v2 Scaffolding
         run: |
-          if [ ! -d "android" ]; then
-            flutter create --platforms=android --org com.example .
-          fi
+          # Purge legacy v1 embedding Android directory completely
+          rm -rf android
+          # Generate pure Flutter v2 embedding Android project files
+          flutter create --platforms=android --org com.example .
 
-      - name: Set App Name to Akshara & Configure minSdkVersion 21
+      - name: Configure App Name & SDK 21
         run: |
-          # Set Android app label
+          # Set App Label to Akshara
           if [ -f "android/app/src/main/AndroidManifest.xml" ]; then
             sed -i 's/android:label="[^"]*"/android:label="Akshara"/g' android/app/src/main/AndroidManifest.xml || true
           fi
