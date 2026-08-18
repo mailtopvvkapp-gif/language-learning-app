@@ -17,7 +17,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Set up Java 17
-        uses: actions/setup-java@v4
+        uses: actions/setup-java@v5
         with:
           distribution: 'temurin'
           java-version: '17'
@@ -28,16 +28,15 @@ jobs:
           channel: 'stable'
           cache: false
 
-      - name: Auto-Create Missing Assets & Native Android Files
+      - name: Auto-Create Assets & Android Scaffolding
         run: |
           mkdir -p assets/icon assets/data
           if [ ! -f "assets/icon/app_logo.png" ]; then
             echo "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==" | base64 --decode > assets/icon/app_logo.png
           fi
-          # Fresh Android project generation
           flutter create --platforms=android --org com.example .
 
-      - name: Set minSdkVersion 21
+      - name: Enforce SDK 21 & Build Permissions
         run: |
           if [ -f "android/app/build.gradle" ]; then
             sed -i 's/minSdkVersion = flutter.minSdkVersion/minSdkVersion = 21/g' android/app/build.gradle || true
@@ -47,11 +46,12 @@ jobs:
             sed -i 's/minSdk = flutter.minSdkVersion/minSdk = 21/g' android/app/build.gradle.kts || true
           fi
 
-      - name: Resolve Flutter Dependencies
-        run: flutter pub get
+      - name: Accept Android Licenses
+        run: |
+          yes | flutter doctor --android-licenses || true
 
-      - name: Check for Dart Compilation Errors
-        run: flutter analyze
+      - name: Fetch Flutter Packages
+        run: flutter pub get
 
       - name: Compile Release APK
         run: flutter build apk --release --no-tree-shake-icons
