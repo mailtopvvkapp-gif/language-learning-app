@@ -8,7 +8,6 @@ class RichImageCard extends StatelessWidget {
 
   Map<String, dynamic> _getGraphicData(String wordKey) {
     switch (wordKey.trim().toUpperCase()) {
-      // Telugu / Hindi / English Root Words
       case 'అమ్మ': case 'MOTHER': return {'icon': '👩‍👧', 'bg': const Color(0xFFE84393)};
       case 'ఆవు': case 'COW': return {'icon': '🐄', 'bg': const Color(0xFF55EFC4)};
       case 'ఇల్లు': case 'HOUSE': case 'घर': return {'icon': '🏠', 'bg': const Color(0xFF0984E3)};
