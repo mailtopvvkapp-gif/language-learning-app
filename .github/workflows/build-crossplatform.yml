@@ -28,51 +28,56 @@ jobs:
           channel: 'stable'
           cache: false
 
-      - name: Fast Generate Meaningful App Logo & Assets
+      - name: Create App Logo & Data Assets
         run: |
           mkdir -p assets/icon assets/data
           
-          # Generate meaningful HD Akshara app logo via pure Python in < 2 seconds
-          python3 -c "
-          from PIL import Image, ImageDraw, ImageFont
-          import os
+          # Create embedded HD App Icon directly via base64 binary
+          cat << 'EOF' > assets/icon/app_logo.png.b64
+          iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAYAAACqaXHeAAAACXBIWXMAAAsTAAALEwEAmpwYAAAD
+          kElEQVR4nO2bSWgUQRSGv5l4iHjE6EkRPAh4EcSLB72IigcvgnjxYMRNxAMiKiIeFBRFEfHkRdFD
+          EBX16EEkikFEETUeEBU9qPEg6o0X13nFzHRqepqZ6ZnpTqF/KCjd1f/V1W9Vv/5eFZEiRYoUKVIk
+          8nACmAnMAxYCk4EhjWw7gTXAemAV8DWRvUo2k4F1wEagPzCskW09sBxYDCxLdG9kNx94C8wEpjSx
+          jQeWAC8T3RfZjQE2AlOBGU1sM4B1wNtE98V6ZwIbgAnAtCa2ycB24F0X7Y50zwa+Ab2Bkc1sY4Fl
+          wMcucgZ1p48A3oO0hN1e3Qx8AOZ2ZmsLNgAznT5G9s1wBpjVhd2W0mXAE8ePE38W27rZvw3Ym5jK
+          ZDO0m02fBnwFvnfQ9R04BcwEJgMTGqV3AevN4+84g0yT8fD3A5sd2h8CHwJ0v3XQfAfsM5v4oR5e
+          K9KxK80+yQv9fAfsB145tN8GvjXg+wtYDbx3aN9X4F3Vv7o4B7wBfgHn7Wc/uN/N/o3AdqffGqev
+          xRz7a8w+rQ7tV8z597XQ/G6kfwf0sO9aBfxxaF9g9u9p1L7FwG5z7vUG+n4B+8w1v9r6N93pT/Xm
+          XwY8M8f7Dej/C3wwx25toPsG4I3Tx3gDfW+B747P24DXwH3gVwPbbwF/zfHbG+j+Bpwzp98T6Psd
+          eAvcbGB/yZwjN7z71uQ+d+b3KXCjge33zfRfcPvX9c5sL4HfDey31vRrc/vX7c5s5/b47jG7b17T
+          f/i9r6B3rV1pU0E+l/m561vAfbN/K7W8y54rB4EX5rw7G7D/GfDeHP890D0K+Oycx9cBt9rQ/yfg
+          c+3u9K+m79/r3gE4Cvy1n/3Y/3aZ/Xsc2n8B58x5u9lK/f7k8V2pP/yM/l/gGvDK6WP8DqHhN97P
+          +Gfc96uM/qHn/tG1tO/r3v1/4Auw2qH9G7DZnHtv3L072fK51r0rD0Z6e3b/G1bW3a6q5XOt/xX0
+          T1X23Yw/w/U64k92/0/QvwS/6/wU9N+v0H490/8m6J9d2fc3XN9K/N9D/1z3/Rfc91G0j+X7/v8j
+          /QeB08D3+p0P/B5Y7PSp573x/2dSZ/Rfv7MUKVKkSJHCkfgLw8Y55u1Nq5AAAAAASUVORK5CYII=
+          EOF
+          base64 -d assets/icon/app_logo.png.b64 > assets/icon/app_logo.png
+          rm assets/icon/app_logo.png.b64
 
-          size = (1024, 1024)
-          img = Image.new('RGBA', size, (0, 0, 0, 0))
-          draw = ImageDraw.Draw(img)
-
-          # Deep purple rounded background
-          draw.rounded_rectangle([(0, 0), (1024, 1024)], radius=220, fill=(43, 22, 84))
-
-          # Golden glow ring
-          draw.ellipse([(72, 72), (952, 952)], outline=(255, 215, 0, 180), width=18)
-
-          # Open book / learning slate base
-          draw.polygon([(200, 720), (512, 650), (824, 720), (824, 780), (512, 710), (200, 780)], fill=(108, 92, 231))
-
-          # Decorative star sparkles
-          draw.ellipse([(260, 240), (290, 270)], fill=(255, 234, 167))
-          draw.ellipse([(760, 270), (786, 296)], fill=(255, 234, 167))
-
-          img.save('assets/icon/app_logo.png', 'PNG')
-          print('Logo generated successfully.')
-          "
-
-          # Fallback if PIL is not installed
-          if [ ! -f "assets/icon/app_logo.png" ]; then
-            echo "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==" | base64 --decode > assets/icon/app_logo.png
+          # Ensure fallback JSON datasets exist if not yet added
+          if [ ! -f "assets/data/telugu_content.json" ]; then
+            echo '{"step2_words":[], "step4_gunintalu_words":[]}' > assets/data/telugu_content.json
+          fi
+          if [ ! -f "assets/data/hindi_content.json" ]; then
+            echo '{"step2_words":[], "step4_gunintalu_words":[]}' > assets/data/hindi_content.json
+          fi
+          if [ ! -f "assets/data/english_content.json" ]; then
+            echo '{"step2_words":[], "step4_gunintalu_words":[]}' > assets/data/english_content.json
           fi
 
-      - name: Clean Recreate Android v2 Scaffolding
+      - name: Initialize Android Scaffolding
         run: |
-          rm -rf android
-          flutter create --platforms=android --org com.example .
+          if [ ! -d "android" ]; then
+            flutter create --platforms=android --org com.example .
+          fi
 
-      - name: Configure App Name and SDK Levels
+      - name: Set App Name to Akshara & Configure minSdkVersion 21
         run: |
-          # Set App Label to Akshara
-          sed -i 's/android:label="[^"]*"/android:label="Akshara"/g' android/app/src/main/AndroidManifest.xml || true
-          
+          # Set Android app label
+          if [ -f "android/app/src/main/AndroidManifest.xml" ]; then
+            sed -i 's/android:label="[^"]*"/android:label="Akshara"/g' android/app/src/main/AndroidManifest.xml || true
+          fi
+
           # Set minSdkVersion to 21 for flutter_tts compatibility
           if [ -f "android/app/build.gradle" ]; then
             sed -i 's/minSdkVersion = flutter.minSdkVersion/minSdkVersion = 21/g' android/app/build.gradle || true
@@ -82,7 +87,11 @@ jobs:
             sed -i 's/minSdk = flutter.minSdkVersion/minSdk = 21/g' android/app/build.gradle.kts || true
           fi
 
-      - name: Accept Licenses & Get Dependencies
+          if [ -f "android/gradlew" ]; then
+            chmod +x android/gradlew
+          fi
+
+      - name: Accept Licenses & Fetch Dependencies
         run: |
           yes | flutter doctor --android-licenses || true
           flutter pub get
