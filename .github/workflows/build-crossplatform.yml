@@ -16,8 +16,8 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v4
 
-      - name: Set up Java 17 (Latest v5 Action)
-        uses: actions/setup-java@v5
+      - name: Set up Java 17
+        uses: actions/setup-java@v4
         with:
           distribution: 'temurin'
           java-version: '17'
@@ -28,16 +28,16 @@ jobs:
           channel: 'stable'
           cache: false
 
-      - name: Auto-Fix Directories, Icons & Android Native Files
+      - name: Auto-Create Missing Assets & Native Android Files
         run: |
           mkdir -p assets/icon assets/data
           if [ ! -f "assets/icon/app_logo.png" ]; then
             echo "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==" | base64 --decode > assets/icon/app_logo.png
           fi
-          # Fresh Android project files generator
+          # Fresh Android project generation
           flutter create --platforms=android --org com.example .
 
-      - name: Enforce minSdkVersion 21
+      - name: Set minSdkVersion 21
         run: |
           if [ -f "android/app/build.gradle" ]; then
             sed -i 's/minSdkVersion = flutter.minSdkVersion/minSdkVersion = 21/g' android/app/build.gradle || true
@@ -47,17 +47,14 @@ jobs:
             sed -i 's/minSdk = flutter.minSdkVersion/minSdk = 21/g' android/app/build.gradle.kts || true
           fi
 
-      - name: Accept Android Licenses
-        run: |
-          yes | flutter doctor --android-licenses || true
-
       - name: Resolve Flutter Dependencies
-        run: |
-          flutter pub get
+        run: flutter pub get
+
+      - name: Check for Dart Compilation Errors
+        run: flutter analyze
 
       - name: Compile Release APK
-        run: |
-          flutter build apk --release --no-tree-shake-icons
+        run: flutter build apk --release --no-tree-shake-icons
 
       - name: Upload Android Release APK
         uses: actions/upload-artifact@v4
