@@ -13,31 +13,41 @@ jobs:
     name: Build Android APK
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout Code
+      - name: Checkout Repository
         uses: actions/checkout@v4
 
-      - name: Set up Java 17
+      - name: Setup Java 17
         uses: actions/setup-java@v5
         with:
           distribution: 'temurin'
           java-version: '17'
 
-      - name: Set up Flutter Environment
+      - name: Setup Flutter Environment
         uses: subosito/flutter-action@v2
         with:
           channel: 'stable'
           cache: false
 
-      - name: Auto-Create Assets & Android Scaffolding
+      - name: Setup Android Scaffolding & Assets
         run: |
           mkdir -p assets/icon assets/data
           if [ ! -f "assets/icon/app_logo.png" ]; then
             echo "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==" | base64 --decode > assets/icon/app_logo.png
           fi
-          flutter create --platforms=android --org com.example .
+          
+          # Android ప్రాజెక్ట్ ఫైల్స్ లేకపోతే సురక్షితంగా జెనరేట్ చేస్తుంది
+          if [ ! -d "android" ]; then
+            flutter create --platforms=android .
+          fi
 
-      - name: Enforce SDK 21 & Build Permissions
+      - name: Configure Gradle & MinSdkVersion 21
         run: |
+          # Gradle wrapper కి ఎగ్జిక్యూట్ పర్మిషన్ ఇస్తుంది
+          if [ -f "android/gradlew" ]; then
+            chmod +x android/gradlew
+          fi
+
+          # flutter_tts కోసం minSdkVersion 21 ని సెట్ చేస్తుంది
           if [ -f "android/app/build.gradle" ]; then
             sed -i 's/minSdkVersion = flutter.minSdkVersion/minSdkVersion = 21/g' android/app/build.gradle || true
             sed -i 's/minSdkVersion flutter.minSdkVersion/minSdkVersion 21/g' android/app/build.gradle || true
@@ -46,15 +56,15 @@ jobs:
             sed -i 's/minSdk = flutter.minSdkVersion/minSdk = 21/g' android/app/build.gradle.kts || true
           fi
 
-      - name: Accept Android Licenses
+      - name: Accept Licenses & Clean
         run: |
           yes | flutter doctor --android-licenses || true
+          flutter clean
+          flutter pub get
 
-      - name: Fetch Flutter Packages
-        run: flutter pub get
-
-      - name: Compile Release APK
-        run: flutter build apk --release --no-tree-shake-icons
+      - name: Build Android Release APK
+        run: |
+          flutter build apk --release --no-tree-shake-icons
 
       - name: Upload Android Release APK
         uses: actions/upload-artifact@v4
