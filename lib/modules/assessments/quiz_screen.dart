@@ -2,16 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_learning_app/core/language_provider.dart';
 import 'package:flutter_learning_app/modules/assessments/quiz_controller.dart';
+import 'package:flutter_learning_app/widgets/rich_image_card.dart';
 
 class QuizScreen extends StatefulWidget {
   final List<QuizItem> items;
   final String quizTitle;
 
-  const QuizScreen({
-    Key? key,
-    required this.items,
-    required this.quizTitle,
-  }) : super(key: key);
+  const QuizScreen({Key? key, required this.items, required this.quizTitle}) : super(key: key);
 
   @override
   State<QuizScreen> createState() => _QuizScreenState();
@@ -40,65 +37,39 @@ class _QuizScreenState extends State<QuizScreen> {
 
   void _checkAnswer(String option) async {
     if (_isAnswerChecked || _currentQuestion == null) return;
+    final provider = Provider.of<LanguageProvider>(context, listen: false);
 
-    final langProvider = Provider.of<LanguageProvider>(context, listen: false);
     setState(() {
       _selectedOption = option;
       _isAnswerChecked = true;
     });
 
     if (option != _currentQuestion!.correctAnswer) {
-      // Voice Explanation on Wrong Answer
-      final explanation = _currentQuestion!.item.explanationText ?? 
-          'Incorrect. The correct answer is ${_currentQuestion!.correctAnswer}.';
-      await langProvider.audioService.explainError(customMessage: explanation);
+      final msg = _currentQuestion!.item.explanationText ?? 'తప్పు సమాధానం. సరైన పదం ${_currentQuestion!.correctAnswer}.';
+      await provider.audioService.explainError(customMessage: msg);
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    if (_currentQuestion == null) {
-      return const Scaffold(body: Center(child: CircularProgressIndicator()));
-    }
+    if (_currentQuestion == null) return const Scaffold(body: Center(child: CircularProgressIndicator()));
 
     return Scaffold(
       backgroundColor: const Color(0xFF1E122A),
-      appBar: AppBar(
-        title: Text(widget.quizTitle),
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-      ),
+      appBar: AppBar(title: Text(widget.quizTitle), backgroundColor: Colors.transparent, elevation: 0),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           children: [
-            // Rich Word Image Card
             Expanded(
               flex: 4,
-              child: Container(
-                width: double.infinity,
-                decoration: BoxDecoration(
-                  color: Colors.white.withOpacity(0.08),
-                  borderRadius: BorderRadius.circular(20),
-                  border: Border.all(color: Colors.white24),
-                ),
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(20),
-                  child: Image.asset(
-                    _currentQuestion!.item.imagePath,
-                    fit: BoxFit.contain,
-                    errorBuilder: (_, __, ___) => const Center(
-                      child: Icon(Icons.image_not_supported, size: 64, color: Colors.white38),
-                    ),
-                  ),
-                ),
+              child: Center(
+                child: RichImageCard(word: _currentQuestion!.correctAnswer, size: 190),
               ),
             ),
             const SizedBox(height: 20),
-
-            // MCQ Options
             Expanded(
-              flex: 5,
+              flex: 4,
               child: GridView.count(
                 crossAxisCount: 2,
                 mainAxisSpacing: 12,
@@ -106,41 +77,24 @@ class _QuizScreenState extends State<QuizScreen> {
                 childAspectRatio: 2.2,
                 children: _currentQuestion!.options.map((option) {
                   Color btnColor = Colors.white.withOpacity(0.12);
-
                   if (_isAnswerChecked) {
-                    if (option == _currentQuestion!.correctAnswer) {
-                      btnColor = Colors.greenAccent.shade700;
-                    } else if (option == _selectedOption) {
-                      btnColor = Colors.redAccent.shade700;
-                    }
+                    if (option == _currentQuestion!.correctAnswer) btnColor = Colors.greenAccent.shade700;
+                    else if (option == _selectedOption) btnColor = Colors.redAccent.shade700;
                   }
-
                   return ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: btnColor,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(14),
-                      ),
-                    ),
+                    style: ElevatedButton.styleFrom(backgroundColor: btnColor, shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14))),
                     onPressed: () => _checkAnswer(option),
-                    child: Text(
-                      option,
-                      style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                    ),
+                    child: Text(option, style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
                   );
                 }).toList(),
               ),
             ),
-
-            // Next Question Button
             if (_isAnswerChecked)
               ElevatedButton(
                 style: ElevatedButton.styleFrom(
                   backgroundColor: const Color(0xFF6C5CE7),
                   minimumSize: const Size(double.infinity, 50),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
-                  ),
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                 ),
                 onPressed: _loadNextQuestion,
                 child: const Text('Next Question ➔', style: TextStyle(fontSize: 16)),
