@@ -21,27 +21,33 @@ jobs:
           distribution: 'temurin'
           java-version: '17'
 
-      - name: Set up Flutter
+      - name: Set up Flutter Environment
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.29.0'
           channel: 'stable'
           cache: false
 
-      - name: Verify Android Licenses
+      - name: Provision Missing Flutter Platform Files
+        run: |
+          # android ఫోల్డర్ లేకపోతే ఆటోమేటిక్‌గా క్రియేట్ చేస్తుంది
+          if [ ! -d "android" ]; then
+            echo "Generating missing Android project files..."
+            flutter create --platforms=android .
+          fi
+
+      - name: Accept Android Licenses
         run: |
           yes | flutter doctor --android-licenses || true
 
-      - name: Clean & Get Packages
+      - name: Resolve Dependencies
         run: |
-          flutter clean
           flutter pub get
 
       - name: Build Android Release APK
         run: |
-          flutter build apk --release --verbose
+          flutter build apk --release
 
-      - name: Upload Android Release APK
+      - name: Upload APK Artifact
         uses: actions/upload-artifact@v4
         with:
           name: Android-Release-APK
