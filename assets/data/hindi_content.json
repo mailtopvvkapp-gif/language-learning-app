@@ -5,9 +5,10 @@
       "word": "कलम",
       "phonetics": "Kalam",
       "meaning": "Pen",
-      "image_path": "assets/images/step2_words/pen.png",
+      "image_path": "",
       "broken_down": ["क", "ल", "म"],
-      "distractors": ["घर", "नल", "कमल"]
+      "distractors": ["घर", "कमल", "नल"],
+      "explanation_audio_text": "यह गलत है। सही उत्तर कलम है।"
     }
   ],
   "step4_gunintalu_words": [
@@ -16,10 +17,10 @@
       "word": "किताब",
       "phonetics": "Kitaab",
       "meaning": "Book",
-      "image_path": "assets/images/step4_gunintalu/book.png",
+      "image_path": "",
       "gunintam_breakdown": ["क + ि (कि)", "त + ा (ता)", "ब"],
-      "distractors": ["कुत्ता", "चिड़िया", "सूरज"],
-      "explanation_audio_text": "यह गलत उत्तर है। सही शब्द किताब है। क में छोटी इ की मात्रा और त में आ की मात्रा आती है।"
+      "distractors": ["सूरज", "तोता", "कौआ"],
+      "explanation_audio_text": "यह गलत उत्तर है। सही शब्द किताब है।"
     }
   ]
 }
