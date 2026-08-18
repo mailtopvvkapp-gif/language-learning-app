@@ -5,9 +5,20 @@
       "word": "కలము",
       "phonetics": "Kalamu",
       "meaning": "Pen",
-      "image_path": "assets/images/step2_words/pen.png",
+      "image_path": "",
       "broken_down": ["క", "ల", "ము"],
-      "distractors": ["వల", "పలక", "కమలము"]
+      "distractors": ["వల", "పలక", "కమలము"],
+      "explanation_audio_text": "ఇది తప్పు. మీరు ఎంచుకున్నది {selected}. సరైన సమాధానం కలము."
+    },
+    {
+      "id": "te_w_002",
+      "word": "వల",
+      "phonetics": "Vala",
+      "meaning": "Net",
+      "image_path": "",
+      "broken_down": ["వ", "ల"],
+      "distractors": ["కలము", "పలక", "కమలము"],
+      "explanation_audio_text": "ఇది తప్పు. మీరు ఎంచుకున్నది {selected}. సరైన సమాధానం వల."
     }
   ],
   "step4_gunintalu_words": [
@@ -16,10 +27,20 @@
       "word": "కాకి",
       "phonetics": "Kaaki",
       "meaning": "Crow",
-      "image_path": "assets/images/step4_gunintalu/crow.png",
+      "image_path": "",
       "gunintam_breakdown": ["క + ా (కా)", "క + ి (కి)"],
       "distractors": ["కోడి", "కుక్క", "చిలుక"],
-      "explanation_audio_text": "ఇది తప్పు. మీరు ఎంచుకున్నది {selected}. సరైన సమాధానం కాకి. కా గుణింతంలో దీర్ఘం మరియు కి గుణింతంలో గుడి వస్తాయి."
+      "explanation_audio_text": "ఇది తప్పు. సరైన సమాధానం కాకి. క కి దీర్ఘం ఇస్తే కా, క కి గుడి ఇస్తే కి అవుతుంది."
+    },
+    {
+      "id": "te_gw_002",
+      "word": "చిలుక",
+      "phonetics": "Chiluka",
+      "meaning": "Parrot",
+      "image_path": "",
+      "gunintam_breakdown": ["చ + ి (చి)", "ల + ు (లు)", "క"],
+      "distractors": ["కాకి", "కోడి", "కుక్క"],
+      "explanation_audio_text": "ఇది తప్పు. సరైన సమాధానం చిలుక."
     }
   ]
 }
