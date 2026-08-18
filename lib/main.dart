@@ -26,7 +26,6 @@ class MyApp extends StatelessWidget {
         title: 'Learn Telugu, Hindi & English',
         debugShowCheckedModeBanner: false,
         theme: ThemeData(
-          fontFamily: 'NotoSansTelugu',
           primarySwatch: Colors.deepPurple,
         ),
         home: const LanguageSelectScreen(),
