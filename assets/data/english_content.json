@@ -1,26 +1,42 @@
 {
   "step2_words": [
-    {
-      "id": "en_w_001",
-      "word": "PEN",
-      "phonetics": "Pen",
-      "meaning": "Pen",
-      "image_path": "",
-      "broken_down": ["P", "E", "N"],
-      "distractors": ["NET", "CAT", "DOG"],
-      "explanation_audio_text": "That is incorrect. The correct answer is PEN."
-    }
+    {"id": "en_01", "word": "APPLE", "letter": "A", "meaning": "Apple", "distractors": ["BALL", "CAT", "DOG"], "explanation_audio_text": "A for Apple."},
+    {"id": "en_02", "word": "BALL", "letter": "B", "meaning": "Ball", "distractors": ["APPLE", "CAT", "EGG"], "explanation_audio_text": "B for Ball."},
+    {"id": "en_03", "word": "CAT", "letter": "C", "meaning": "Cat", "distractors": ["DOG", "FISH", "GOAT"], "explanation_audio_text": "C for Cat."},
+    {"id": "en_04", "word": "DOG", "letter": "D", "meaning": "Dog", "distractors": ["CAT", "HEN", "ICE"], "explanation_audio_text": "D for Dog."},
+    {"id": "en_05", "word": "EGG", "letter": "E", "meaning": "Egg", "distractors": ["FISH", "JUG", "KITE"], "explanation_audio_text": "E for Egg."},
+    {"id": "en_06", "word": "FISH", "letter": "F", "meaning": "Fish", "distractors": ["GOAT", "LION", "MONKEY"], "explanation_audio_text": "F for Fish."},
+    {"id": "en_07", "word": "GOAT", "letter": "G", "meaning": "Goat", "distractors": ["HEN", "NEST", "OWL"], "explanation_audio_text": "G for Goat."},
+    {"id": "en_08", "word": "HEN", "letter": "H", "meaning": "Hen", "distractors": ["ICE", "PEN", "QUEEN"], "explanation_audio_text": "H for Hen."},
+    {"id": "en_09", "word": "ICE", "letter": "I", "meaning": "Ice", "distractors": ["JUG", "RING", "SUN"], "explanation_audio_text": "I for Ice."},
+    {"id": "en_10", "word": "JUG", "letter": "J", "meaning": "Jug", "distractors": ["KITE", "TREE", "VAN"], "explanation_audio_text": "J for Jug."},
+    {"id": "en_11", "word": "KITE", "letter": "K", "meaning": "Kite", "distractors": ["LION", "WATCH", "YAK"], "explanation_audio_text": "K for Kite."},
+    {"id": "en_12", "word": "LION", "letter": "L", "meaning": "Lion", "distractors": ["MONKEY", "ZEBRA", "APPLE"], "explanation_audio_text": "L for Lion."},
+    {"id": "en_13", "word": "MONKEY", "letter": "M", "meaning": "Monkey", "distractors": ["NEST", "BALL", "CAT"], "explanation_audio_text": "M for Monkey."},
+    {"id": "en_14", "word": "NEST", "letter": "N", "meaning": "Nest", "distractors": ["OWL", "DOG", "EGG"], "explanation_audio_text": "N for Nest."},
+    {"id": "en_15", "word": "OWL", "letter": "O", "meaning": "Owl", "distractors": ["PEN", "FISH", "GOAT"], "explanation_audio_text": "O for Owl."},
+    {"id": "en_16", "word": "PEN", "letter": "P", "meaning": "Pen", "distractors": ["QUEEN", "HEN", "ICE"], "explanation_audio_text": "P for Pen."},
+    {"id": "en_17", "word": "QUEEN", "letter": "Q", "meaning": "Queen", "distractors": ["RING", "JUG", "KITE"], "explanation_audio_text": "Q for Queen."},
+    {"id": "en_18", "word": "RING", "letter": "R", "meaning": "Ring", "distractors": ["SUN", "LION", "MONKEY"], "explanation_audio_text": "R for Ring."},
+    {"id": "en_19", "word": "SUN", "letter": "S", "meaning": "Sun", "distractors": ["TREE", "NEST", "OWL"], "explanation_audio_text": "S for Sun."},
+    {"id": "en_20", "word": "TREE", "letter": "T", "meaning": "Tree", "distractors": ["VAN", "PEN", "QUEEN"], "explanation_audio_text": "T for Tree."},
+    {"id": "en_21", "word": "UMBRELLA", "letter": "U", "meaning": "Umbrella", "distractors": ["VAN", "WATCH", "RING"], "explanation_audio_text": "U for Umbrella."},
+    {"id": "en_22", "word": "VAN", "letter": "V", "meaning": "Van", "distractors": ["WATCH", "SUN", "TREE"], "explanation_audio_text": "V for Van."},
+    {"id": "en_23", "word": "WATCH", "letter": "W", "meaning": "Watch", "distractors": ["YAK", "APPLE", "BALL"], "explanation_audio_text": "W for Watch."},
+    {"id": "en_24", "word": "XYLOPHONE", "letter": "X", "meaning": "Xylophone", "distractors": ["YAK", "ZEBRA", "CAT"], "explanation_audio_text": "X for Xylophone."},
+    {"id": "en_25", "word": "YAK", "letter": "Y", "meaning": "Yak", "distractors": ["ZEBRA", "DOG", "EGG"], "explanation_audio_text": "Y for Yak."},
+    {"id": "en_26", "word": "ZEBRA", "letter": "Z", "meaning": "Zebra", "distractors": ["APPLE", "BALL", "FISH"], "explanation_audio_text": "Z for Zebra."}
   ],
   "step4_gunintalu_words": [
-    {
-      "id": "en_gw_001",
-      "word": "BOOK",
-      "phonetics": "Book",
-      "meaning": "Book",
-      "image_path": "",
-      "gunintam_breakdown": ["B", "OO", "K"],
-      "distractors": ["CROW", "PARROT", "SHIP"],
-      "explanation_audio_text": "That is incorrect. The correct word is BOOK."
-    }
+    {"id": "en_g01", "word": "SHIP", "letter": "SH", "meaning": "Ship", "distractors": ["CHIP", "FISH", "SHOP"], "explanation_audio_text": "SH blend makes the sound in Ship."},
+    {"id": "en_g02", "word": "CHAIR", "letter": "CH", "meaning": "Chair", "distractors": ["SHIP", "TREE", "BOOK"], "explanation_audio_text": "CH blend makes the sound in Chair."},
+    {"id": "en_g03", "word": "THUMB", "letter": "TH", "meaning": "Thumb", "distractors": ["RING", "WATCH", "STAR"], "explanation_audio_text": "TH digraph makes the sound in Thumb."},
+    {"id": "en_g04", "word": "PHOTO", "letter": "PH", "meaning": "Photo", "distractors": ["PHONE", "PEN", "CLOCK"], "explanation_audio_text": "PH blend sounds like F in Photo."},
+    {"id": "en_g05", "word": "WHALE", "letter": "WH", "meaning": "Whale", "distractors": ["SHIP", "FISH", "BOAT"], "explanation_audio_text": "WH blend makes the sound in Whale."},
+    {"id": "en_g06", "word": "CLOCK", "letter": "CL", "meaning": "Clock", "distractors": ["BLOCK", "LOCK", "WATCH"], "explanation_audio_text": "CL blend in Clock."},
+    {"id": "en_g07", "word": "FROG", "letter": "FR", "meaning": "Frog", "distractors": ["FISH", "CRAB", "DUCK"], "explanation_audio_text": "FR blend makes the sound in Frog."},
+    {"id": "en_g08", "word": "STAR", "letter": "ST", "meaning": "Star", "distractors": ["SUN", "MOON", "TREE"], "explanation_audio_text": "ST blend in Star."},
+    {"id": "en_g09", "word": "TRAIN", "letter": "TR", "meaning": "Train", "distractors": ["CAR", "VAN", "BUS"], "explanation_audio_text": "TR blend in Train."},
+    {"id": "en_g10", "word": "DRUM", "letter": "DR", "meaning": "Drum", "distractors": ["BELL", "GUITAR", "RING"], "explanation_audio_text": "DR blend in Drum."}
   ]
 }
