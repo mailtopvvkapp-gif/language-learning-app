@@ -28,21 +28,17 @@ jobs:
           channel: 'stable'
           cache: false
 
-      - name: Ensure Assets & Clean v2 Embedding
+      - name: Recreate Clean Android v2 Scaffolding & Assets
         run: |
+          # 1. డమ్మీ అసెట్స్ క్రియేట్ చేస్తుంది
           mkdir -p assets/icon assets/data
           if [ ! -f "assets/icon/app_logo.png" ]; then
             echo "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==" | base64 --decode > assets/icon/app_logo.png
           fi
-          
-          # Delete outdated android folder if it uses v1 embedding and recreate with v2
-          if grep -rq "io.flutter.app.FlutterActivity" android/ 2>/dev/null; then
-            rm -rf android
-          fi
 
-          if [ ! -d "android" ]; then
-            flutter create --platforms=android --org com.example .
-          fi
+          # 2. పాత v1 ఆండ్రాయిడ్ ఫోల్డర్‌ను పూర్తిగా తొలగించి v2 తో రీ-క్రియేట్ చేస్తుంది
+          rm -rf android
+          flutter create --platforms=android --org com.example .
 
       - name: Configure Gradle & MinSdkVersion 21
         run: |
