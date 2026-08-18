@@ -23,7 +23,11 @@ class QuizQuestion {
   final List<String> options;
   final String correctAnswer;
 
-  QuizQuestion({required this.item, required this.options, required this.correctAnswer});
+  QuizQuestion({
+    required this.item,
+    required this.options,
+    required this.correctAnswer,
+  });
 }
 
 class AssessmentController {
@@ -43,7 +47,7 @@ class AssessmentController {
   QuizQuestion? getNextQuestion(int totalOptions) {
     if (_currentSessionPool.isEmpty) _resetOrShufflePool();
     if (_currentSessionPool.isEmpty) return null;
-    
+
     final target = _currentSessionPool.removeLast();
     _usedItemIds.add(target.id);
 
@@ -51,7 +55,9 @@ class AssessmentController {
     List<String> dist = List.from(target.distractors)..shuffle(Random());
 
     for (var d in dist) {
-      if (opts.length < totalOptions && !opts.contains(d)) opts.add(d);
+      if (opts.length < totalOptions && !opts.contains(d)) {
+        opts.add(d);
+      }
     }
     opts.shuffle(Random());
 
