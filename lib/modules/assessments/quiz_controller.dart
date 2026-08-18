@@ -3,6 +3,7 @@ import 'dart:math';
 class QuizItem {
   final String id;
   final String word;
+  final String letter;
   final String imagePath;
   final List<String> distractors;
   final String? explanationText;
@@ -10,6 +11,7 @@ class QuizItem {
   QuizItem({
     required this.id,
     required this.word,
+    this.letter = '',
     required this.imagePath,
     required this.distractors,
     this.explanationText,
@@ -40,6 +42,8 @@ class AssessmentController {
 
   QuizQuestion? getNextQuestion(int totalOptions) {
     if (_currentSessionPool.isEmpty) _resetOrShufflePool();
+    if (_currentSessionPool.isEmpty) return null;
+    
     final target = _currentSessionPool.removeLast();
     _usedItemIds.add(target.id);
 
