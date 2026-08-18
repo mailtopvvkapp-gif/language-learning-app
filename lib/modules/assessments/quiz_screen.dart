@@ -52,7 +52,13 @@ class _QuizScreenState extends State<QuizScreen> {
 
   @override
   Widget build(BuildContext context) {
-    if (_currentQuestion == null) return const Scaffold(body: Center(child: CircularProgressIndicator()));
+    if (_currentQuestion == null) {
+      return Scaffold(
+        backgroundColor: const Color(0xFF1E122A),
+        appBar: AppBar(title: Text(widget.quizTitle), backgroundColor: Colors.transparent),
+        body: const Center(child: Text('అన్ని ప్రశ్నలు పూర్తయ్యాయి!', style: TextStyle(color: Colors.white, fontSize: 18))),
+      );
+    }
 
     return Scaffold(
       backgroundColor: const Color(0xFF1E122A),
@@ -64,7 +70,7 @@ class _QuizScreenState extends State<QuizScreen> {
             Expanded(
               flex: 4,
               child: Center(
-                child: RichImageCard(word: _currentQuestion!.correctAnswer, size: 190),
+                child: RichImageCard(word: _currentQuestion!.correctAnswer, size: 180),
               ),
             ),
             const SizedBox(height: 20),
@@ -78,13 +84,19 @@ class _QuizScreenState extends State<QuizScreen> {
                 children: _currentQuestion!.options.map((option) {
                   Color btnColor = Colors.white.withOpacity(0.12);
                   if (_isAnswerChecked) {
-                    if (option == _currentQuestion!.correctAnswer) btnColor = Colors.greenAccent.shade700;
-                    else if (option == _selectedOption) btnColor = Colors.redAccent.shade700;
+                    if (option == _currentQuestion!.correctAnswer) {
+                      btnColor = Colors.greenAccent.shade700;
+                    } else if (option == _selectedOption) {
+                      btnColor = Colors.redAccent.shade700;
+                    }
                   }
                   return ElevatedButton(
-                    style: ElevatedButton.styleFrom(backgroundColor: btnColor, shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14))),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: btnColor,
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+                    ),
                     onPressed: () => _checkAnswer(option),
-                    child: Text(option, style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+                    child: Text(option, style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.white)),
                   );
                 }).toList(),
               ),
@@ -97,7 +109,7 @@ class _QuizScreenState extends State<QuizScreen> {
                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                 ),
                 onPressed: _loadNextQuestion,
-                child: const Text('Next Question ➔', style: TextStyle(fontSize: 16)),
+                child: const Text('తర్వాతి ప్రశ్న (Next) ➔', style: TextStyle(fontSize: 16, color: Colors.white)),
               ),
           ],
         ),
