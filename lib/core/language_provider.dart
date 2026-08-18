@@ -11,7 +11,8 @@ class LanguageProvider extends ChangeNotifier {
   AppLanguage _currentLanguage = AppLanguage.telugu;
   
   List<String> step1Letters = [];
-  List<String> step3Gunintalu = [];
+  List<String> availableConsonants = [];
+  Map<String, List<String>> fullGunintaluMap = {};
   List<QuizItem> step2Words = [];
   List<QuizItem> step4Words = [];
   bool isLoading = true;
@@ -30,32 +31,24 @@ class LanguageProvider extends ChangeNotifier {
 
   String get step1Title {
     switch (_currentLanguage) {
-      case AppLanguage.telugu: return 'Step 1: అక్షరాలు (Full Alphabet)';
-      case AppLanguage.hindi: return 'Step 1: संपूर्ण वर्णमाला (Alphabet)';
-      case AppLanguage.english: return 'Step 1: Letters (A to Z)';
+      case AppLanguage.telugu: return 'Step 1: అక్షరాలు (Alphabet)';
+      case AppLanguage.hindi: return 'Step 1: वर्णमाला (Alphabet)';
+      case AppLanguage.english: return 'Step 1: Alphabet (A to Z)';
     }
   }
 
   String get step2Title {
     switch (_currentLanguage) {
-      case AppLanguage.telugu: return 'Step 2: అక్షరాల పదాలు (A for Apple Style)';
-      case AppLanguage.hindi: return 'Step 2: अक्षरों के शब्द (Words for Letters)';
+      case AppLanguage.telugu: return 'Step 2: అక్షరాల పదాలు (Root Words)';
+      case AppLanguage.hindi: return 'Step 2: अक्षरों के शब्द (Root Words)';
       case AppLanguage.english: return 'Step 2: Words for Letters (A-Z)';
-    }
-  }
-
-  String get assessment1Title {
-    switch (_currentLanguage) {
-      case AppLanguage.telugu: return '📝 అసెస్‌మెంట్ 1 (Step 2 క్విజ్)';
-      case AppLanguage.hindi: return '📝 मूल्यांकन 1 (Step 2 क्विज़)';
-      case AppLanguage.english: return '📝 Assessment 1 (Step 2 Quiz)';
     }
   }
 
   String get step3Title {
     switch (_currentLanguage) {
-      case AppLanguage.telugu: return 'Step 3: గుణింతాలు (Full Gunintalu)';
-      case AppLanguage.hindi: return 'Step 3: मात्राएँ (Matras)';
+      case AppLanguage.telugu: return 'Step 3: గుణింతాలు (క to క్ష)';
+      case AppLanguage.hindi: return 'Step 3: बारहखड़ी (क to ज्ञ)';
       case AppLanguage.english: return 'Step 3: Phonics & Blends';
     }
   }
@@ -68,13 +61,8 @@ class LanguageProvider extends ChangeNotifier {
     }
   }
 
-  String get finalAssessmentTitle {
-    switch (_currentLanguage) {
-      case AppLanguage.telugu: return '🏆 ఫైనల్ అసెస్‌మెంట్ (Final Assessment)';
-      case AppLanguage.hindi: return '🏆 अंतिम मूल्यांकन (Final Assessment)';
-      case AppLanguage.english: return '🏆 Final Assessment';
-    }
-  }
+  String get assessment1Title => '📝 Assessment 1 (Step 2 Quiz)';
+  String get finalAssessmentTitle => '🏆 Final Assessment (Step 4 Quiz)';
 
   Future<void> changeLanguage(AppLanguage language) async {
     _currentLanguage = language;
@@ -88,51 +76,45 @@ class LanguageProvider extends ChangeNotifier {
       case AppLanguage.telugu:
         langCode = 'te-IN';
         jsonPath = 'assets/data/telugu_content.json';
-        // పూర్తి తెలుగు వర్ణమాల (అచ్చులు + హల్లులు)
         step1Letters = [
           'అ', 'ఆ', 'ఇ', 'ఈ', 'ఉ', 'ఊ', 'ఋ', 'ౠ', 'ఎ', 'ఏ', 'ఐ', 'ఒ', 'ఓ', 'ఔ', 'అం', 'అః',
           'క', 'ఖ', 'గ', 'ఘ', 'ఙ', 'చ', 'ఛ', 'జ', 'ఝ', 'ఞ', 'ట', 'ఠ', 'డ', 'ఢ', 'ణ',
           'త', 'థ', 'ద', 'ధ', 'న', 'ప', 'ఫ', 'బ', 'భ', 'మ', 'య', 'ర', 'ల', 'వ', 'శ', 'ష', 'స', 'హ', 'ళ', 'క్ష', 'ఱ'
         ];
-        // గుణింతాల గుర్తులు & ఉదాహరణలు
-        step3Gunintalu = [
-          'క', 'కా', 'కి', 'కీ', 'కు', 'కూ', 'కృ', 'కౄ', 'కె', 'కే', 'కై', 'కొ', 'కో', 'కౌ', 'కం', 'కః',
-          'గ', 'గా', 'గి', 'గీ', 'గు', 'గూ', 'గృ', 'గె', 'గే', 'గై', 'గొ', 'గో', 'గౌ', 'గం', 'గః',
-          'చ', 'చా', 'చి', 'చీ', 'చు', 'చూ', 'చె', 'చే', 'చై', 'చొ', 'చో', 'చౌ', 'చం', 'చః',
-          'త', 'తా', 'తి', 'తీ', 'తు', 'తూ', 'తె', 'తే', 'తై', 'తొ', 'తో', 'తౌ', 'తం', 'తః',
-          'ప', 'పా', 'పి', 'పీ', 'పు', 'పూ', 'పె', 'పే', 'పై', 'పొ', 'పో', 'పౌ', 'పం', 'పః'
+        availableConsonants = [
+          'క', 'ఖ', 'గ', 'ఘ', 'చ', 'ఛ', 'జ', 'ఝ', 'ట', 'ఠ', 'డ', 'ఢ', 'ణ',
+          'త', 'థ', 'ద', 'ధ', 'న', 'ప', 'ఫ', 'బ', 'భ', 'మ', 'య', 'ర', 'ల', 'వ', 'శ', 'ష', 'స', 'హ', 'ళ', 'క్ష', 'ఱ'
         ];
+        _buildTeluguGunintalu();
         break;
 
       case AppLanguage.hindi:
         langCode = 'hi-IN';
         jsonPath = 'assets/data/hindi_content.json';
-        // पूर्ण हिंदी वर्णमाला (स्वर + व्यंजन)
         step1Letters = [
           'अ', 'आ', 'इ', 'ई', 'उ', 'ऊ', 'ऋ', 'ए', 'ऐ', 'ओ', 'औ', 'अं', 'अः',
           'क', 'ख', 'ग', 'घ', 'ङ', 'च', 'छ', 'ज', 'झ', 'ञ', 'ट', 'ठ', 'ड', 'ढ', 'ण',
           'त', 'थ', 'द', 'ध', 'न', 'प', 'फ', 'ब', 'भ', 'म', 'य', 'र', 'ल', 'व', 'श', 'ष', 'स', 'ह', 'क्ष', 'त्र', 'ज्ञ'
         ];
-        step3Gunintalu = [
-          'क', 'का', 'कि', 'की', 'कु', 'कू', 'कृ', 'के', 'कै', 'को', 'कौ', 'कं', 'कः',
-          'ग', 'गा', 'गि', 'गी', 'गु', 'गू', 'गे', 'गै', 'गो', 'गौ', 'गं', 'गः',
-          'त', 'ता', 'ति', 'ती', 'तु', 'तू', 'ते', 'तै', 'तो', 'तौ', 'तं', 'तः',
-          'प', 'पा', 'पि', 'पी', 'पु', 'पू', 'पे', 'पै', 'पो', 'पौ', 'पं', 'पः'
+        availableConsonants = [
+          'क', 'ख', 'ग', 'घ', 'च', 'छ', 'ज', 'झ', 'ट', 'ठ', 'ड', 'ढ', 'ण',
+          'त', 'थ', 'द', 'ध', 'न', 'प', 'फ', 'ब', 'भ', 'म', 'य', 'र', 'ल', 'व', 'श', 'ष', 'स', 'ह', 'क्ष', 'त्र', 'ज्ञ'
         ];
+        _buildHindiBarahkhadi();
         break;
 
       case AppLanguage.english:
         langCode = 'en-US';
         jsonPath = 'assets/data/english_content.json';
-        // Full English Alphabet (A to Z)
         step1Letters = [
           'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M',
           'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'
         ];
-        step3Gunintalu = [
-          'SH', 'CH', 'TH', 'PH', 'WH', 'BL', 'CL', 'FL', 'GL', 'PL', 'SL',
-          'BR', 'CR', 'DR', 'FR', 'GR', 'PR', 'TR', 'ST', 'SP', 'SK', 'SW'
-        ];
+        availableConsonants = ['BLENDS', 'DIGRAPHS'];
+        fullGunintaluMap = {
+          'BLENDS': ['BL', 'CL', 'FL', 'GL', 'PL', 'SL', 'BR', 'CR', 'DR', 'FR', 'GR', 'PR', 'TR', 'ST', 'SP', 'SK', 'SW'],
+          'DIGRAPHS': ['SH', 'CH', 'TH', 'PH', 'WH', 'CK', 'QU', 'NG', 'NK']
+        };
         break;
     }
 
@@ -141,6 +123,32 @@ class LanguageProvider extends ChangeNotifier {
 
     isLoading = false;
     notifyListeners();
+  }
+
+  void _buildTeluguGunintalu() {
+    fullGunintaluMap.clear();
+    final suffixes = ['', 'ా', 'ి', 'ీ', 'ు', 'ూ', 'ృ', 'ె', 'ే', 'ై', 'ొ', 'ో', 'ౌ', 'ం', 'ః'];
+
+    for (var c in availableConsonants) {
+      if (c == 'క్ష') {
+        fullGunintaluMap[c] = suffixes.map((s) => 'క్ష$s').toList();
+      } else {
+        fullGunintaluMap[c] = suffixes.map((s) => '$c$s').toList();
+      }
+    }
+  }
+
+  void _buildHindiBarahkhadi() {
+    fullGunintaluMap.clear();
+    final matras = ['', 'ा', 'ि', 'ी', 'ु', 'ू', 'ृ', 'े', 'ै', 'ो', 'ौ', 'ं', 'ः'];
+
+    for (var c in availableConsonants) {
+      if (c == 'र') {
+        fullGunintaluMap[c] = ['र', 'रा', 'रि', 'री', 'रु', 'रू', 'रे', 'रै', 'रो', 'रौ', 'रं', 'रः'];
+      } else {
+        fullGunintaluMap[c] = matras.map((m) => '$c$m').toList();
+      }
+    }
   }
 
   Future<void> _loadJsonData(String path) async {
