@@ -1,4 +1,4 @@
-name: Build Cross-Platform App (Android & iPhone)
+name: Build Cross-Platform App
 
 on:
   push:
@@ -17,7 +17,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Set up Java 17
-        uses: actions/setup-java@v5
+        uses: actions/setup-java@v4
         with:
           distribution: 'temurin'
           java-version: '17'
@@ -28,15 +28,19 @@ jobs:
           channel: 'stable'
           cache: false
 
-      - name: Self-Healing Assets & Directories
+      - name: Fix Assets & Generate Android Scaffolding
         run: |
           mkdir -p assets/icon assets/data
           if [ ! -f "assets/icon/app_logo.png" ]; then
             echo "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==" | base64 --decode > assets/icon/app_logo.png
           fi
-          if [ ! -d "android" ]; then
-            flutter create --platforms=android .
-          fi
+          # Android ప్రాజెక్ట్ సరిగ్గా లేకపోతే రీ-జనరేట్ చేస్తుంది
+          flutter create --platforms=android --org com.example .
+
+      - name: Set Min SDK Version to 21
+        run: |
+          sed -i 's/minSdkVersion = flutter.minSdkVersion/minSdkVersion = 21/g' android/app/build.gradle || true
+          sed -i 's/minSdkVersion flutter.minSdkVersion/minSdkVersion 21/g' android/app/build.gradle || true
 
       - name: Accept Android Licenses
         run: |
@@ -46,13 +50,9 @@ jobs:
         run: |
           flutter pub get
 
-      - name: Analyze Dart Code (Show Exact Errors)
+      - name: Compile Android Release APK
         run: |
-          flutter analyze || true
-
-      - name: Build Android Release APK (Verbose)
-        run: |
-          flutter build apk --release --no-tree-shake-icons --verbose
+          flutter build apk --release --no-tree-shake-icons
 
       - name: Upload Android Release APK
         uses: actions/upload-artifact@v4
