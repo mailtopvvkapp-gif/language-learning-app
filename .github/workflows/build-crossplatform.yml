@@ -28,22 +28,35 @@ jobs:
           channel: 'stable'
           cache: false
 
-      - name: Prepare Assets & Platform Scaffolding
+      - name: Ensure Assets and Files Exist
         run: |
           mkdir -p assets/icon assets/data
+          # డమ్మీ ఐకాన్
           if [ ! -f "assets/icon/app_logo.png" ]; then
             echo "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==" | base64 --decode > assets/icon/app_logo.png
           fi
-          
-          # Android ప్రాజెక్ట్ సరిగ్గా లేకపోతే రీ-క్రియేట్ చేస్తుంది
-          flutter create --platforms=android --org com.example .
+          # డమ్మీ డేటా ఫైల్స్ (ఖాళీ ఫోల్డర్ వల్ల క్రాష్ కాకుండా)
+          if [ ! -f "assets/data/telugu_content.json" ]; then
+            echo '{"step2_words":[], "step4_gunintalu_words":[]}' > assets/data/telugu_content.json
+          fi
+          if [ ! -f "assets/data/hindi_content.json" ]; then
+            echo '{"step2_words":[], "step4_gunintalu_words":[]}' > assets/data/hindi_content.json
+          fi
+          if [ ! -f "assets/data/english_content.json" ]; then
+            echo '{"step2_words":[], "step4_gunintalu_words":[]}' > assets/data/english_content.json
+          fi
 
-      - name: Configure SDK Version & Gradle Permissions
+      - name: Clean & Prepare Android Native Files
         run: |
+          if [ ! -d "android" ]; then
+            flutter create --platforms=android --org com.example .
+          fi
           if [ -f "android/gradlew" ]; then
             chmod +x android/gradlew
           fi
 
+      - name: Set Android Min SDK 21
+        run: |
           if [ -f "android/app/build.gradle" ]; then
             sed -i 's/minSdkVersion = flutter.minSdkVersion/minSdkVersion = 21/g' android/app/build.gradle || true
             sed -i 's/minSdkVersion flutter.minSdkVersion/minSdkVersion 21/g' android/app/build.gradle || true
@@ -52,17 +65,15 @@ jobs:
             sed -i 's/minSdk = flutter.minSdkVersion/minSdk = 21/g' android/app/build.gradle.kts || true
           fi
 
-      - name: Accept Android Licenses
+      - name: Accept Licenses & Get Dependencies
         run: |
           yes | flutter doctor --android-licenses || true
+          flutter pub get
 
-      - name: Install Packages
-        run: flutter pub get
+      - name: Build Android APK
+        run: flutter build apk --release --no-tree-shake-icons
 
-      - name: Build Release APK
-        run: flutter build apk --release --no-tree-shake-icons --verbose
-
-      - name: Upload APK Artifact
+      - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
           name: Android-Release-APK
