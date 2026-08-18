@@ -22,32 +22,28 @@ jobs:
           distribution: 'temurin'
           java-version: '17'
 
-      - name: Setup Flutter Environment
+      - name: Setup Flutter
         uses: subosito/flutter-action@v2
         with:
           channel: 'stable'
           cache: false
 
-      - name: Setup Android Scaffolding & Assets
+      - name: Prepare Assets & Platform Scaffolding
         run: |
           mkdir -p assets/icon assets/data
           if [ ! -f "assets/icon/app_logo.png" ]; then
             echo "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==" | base64 --decode > assets/icon/app_logo.png
           fi
           
-          # Android ప్రాజెక్ట్ ఫైల్స్ లేకపోతే సురక్షితంగా జెనరేట్ చేస్తుంది
-          if [ ! -d "android" ]; then
-            flutter create --platforms=android .
-          fi
+          # Android ప్రాజెక్ట్ సరిగ్గా లేకపోతే రీ-క్రియేట్ చేస్తుంది
+          flutter create --platforms=android --org com.example .
 
-      - name: Configure Gradle & MinSdkVersion 21
+      - name: Configure SDK Version & Gradle Permissions
         run: |
-          # Gradle wrapper కి ఎగ్జిక్యూట్ పర్మిషన్ ఇస్తుంది
           if [ -f "android/gradlew" ]; then
             chmod +x android/gradlew
           fi
 
-          # flutter_tts కోసం minSdkVersion 21 ని సెట్ చేస్తుంది
           if [ -f "android/app/build.gradle" ]; then
             sed -i 's/minSdkVersion = flutter.minSdkVersion/minSdkVersion = 21/g' android/app/build.gradle || true
             sed -i 's/minSdkVersion flutter.minSdkVersion/minSdkVersion 21/g' android/app/build.gradle || true
@@ -56,17 +52,17 @@ jobs:
             sed -i 's/minSdk = flutter.minSdkVersion/minSdk = 21/g' android/app/build.gradle.kts || true
           fi
 
-      - name: Accept Licenses & Clean
+      - name: Accept Android Licenses
         run: |
           yes | flutter doctor --android-licenses || true
-          flutter clean
-          flutter pub get
 
-      - name: Build Android Release APK
-        run: |
-          flutter build apk --release --no-tree-shake-icons
+      - name: Install Packages
+        run: flutter pub get
 
-      - name: Upload Android Release APK
+      - name: Build Release APK
+        run: flutter build apk --release --no-tree-shake-icons --verbose
+
+      - name: Upload APK Artifact
         uses: actions/upload-artifact@v4
         with:
           name: Android-Release-APK
