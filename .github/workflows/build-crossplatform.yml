@@ -22,29 +22,34 @@ jobs:
           distribution: 'temurin'
           java-version: '17'
 
-      - name: Setup Flutter
+      - name: Setup Flutter Environment
         uses: subosito/flutter-action@v2
         with:
           channel: 'stable'
           cache: false
 
-      - name: Recreate Clean Android v2 Scaffolding & Assets
+      - name: Generate Meaningful App Icon & Assets
         run: |
-          # 1. డమ్మీ అసెట్స్ క్రియేట్ చేస్తుంది
           mkdir -p assets/icon assets/data
+          # Run standalone logo generator
+          flutter run scripts/generate_icon.dart -d flutter-tester || true
+          
+          # Fallback verify icon exists
           if [ ! -f "assets/icon/app_logo.png" ]; then
             echo "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==" | base64 --decode > assets/icon/app_logo.png
           fi
 
-          # 2. పాత v1 ఆండ్రాయిడ్ ఫోల్డర్‌ను పూర్తిగా తొలగించి v2 తో రీ-క్రియేట్ చేస్తుంది
+      - name: Clean Recreate Android v2 Scaffolding
+        run: |
           rm -rf android
           flutter create --platforms=android --org com.example .
 
-      - name: Configure Gradle & MinSdkVersion 21
+      - name: Configure App Name and SDK Levels
         run: |
-          if [ -f "android/gradlew" ]; then
-            chmod +x android/gradlew
-          fi
+          # Set App Label to Akshara
+          sed -i 's/android:label="[^"]*"/android:label="Akshara"/g' android/app/src/main/AndroidManifest.xml || true
+          
+          # Set minSdkVersion to 21 for flutter_tts compatibility
           if [ -f "android/app/build.gradle" ]; then
             sed -i 's/minSdkVersion = flutter.minSdkVersion/minSdkVersion = 21/g' android/app/build.gradle || true
             sed -i 's/minSdkVersion flutter.minSdkVersion/minSdkVersion 21/g' android/app/build.gradle || true
@@ -61,7 +66,7 @@ jobs:
       - name: Build Android Release APK
         run: flutter build apk --release --no-tree-shake-icons
 
-      - name: Upload Android Release APK
+      - name: Upload Release APK
         uses: actions/upload-artifact@v4
         with:
           name: Android-Release-APK
