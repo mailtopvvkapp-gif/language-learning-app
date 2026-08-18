@@ -32,7 +32,7 @@ jobs:
         run: |
           mkdir -p assets/icon assets/data
           
-          # Base64 embedded HD App Icon
+          # Custom Akshara Emblem Base64 Logo
           cat << 'EOF' > assets/icon/app_logo.png.b64
           iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAYAAACqaXHeAAAACXBIWXMAAAsTAAALEwEAmpwYAAAD
           kElEQVR4nO2bSWgUQRSGv5l4iHjE6EkRPAh4EcSLB72IigcvgnjxYMRNxAMiKiIeFBRFEfHkRdFD
@@ -54,7 +54,7 @@ jobs:
           base64 -d assets/icon/app_logo.png.b64 > assets/icon/app_logo.png
           rm -f assets/icon/app_logo.png.b64
 
-          # Ensure fallback data files exist
+          # Ensure datasets exist
           if [ ! -f "assets/data/telugu_content.json" ]; then
             echo '{"step2_words":[], "step4_gunintalu_words":[]}' > assets/data/telugu_content.json
           fi
@@ -67,19 +67,27 @@ jobs:
 
       - name: Force Clean Recreate Android v2 Scaffolding
         run: |
-          # Purge legacy v1 embedding Android directory completely
           rm -rf android
-          # Generate pure Flutter v2 embedding Android project files
           flutter create --platforms=android --org com.example .
 
-      - name: Configure App Name & SDK 21
+      - name: Inject Custom App Logo Into All Android Densities
         run: |
-          # Set App Label to Akshara
+          # Overwrite default Flutter launcher icons in all mipmap density folders
+          for density in mdpi hdpi xhdpi xxhdpi xxxhdpi; do
+            mkdir -p "android/app/src/main/res/mipmap-$density"
+            cp assets/icon/app_logo.png "android/app/src/main/res/mipmap-$density/ic_launcher.png"
+            cp assets/icon/app_logo.png "android/app/src/main/res/mipmap-$density/launcher_icon.png"
+          done
+
+      - name: Configure App Name & SDK Settings
+        run: |
+          # Set App Display Name to Akshara and map the icon in AndroidManifest
           if [ -f "android/app/src/main/AndroidManifest.xml" ]; then
             sed -i 's/android:label="[^"]*"/android:label="Akshara"/g' android/app/src/main/AndroidManifest.xml || true
+            sed -i 's/android:icon="[^"]*"/android:icon="@mipmap\/ic_launcher"/g' android/app/src/main/AndroidManifest.xml || true
           fi
 
-          # Set minSdkVersion to 21 for flutter_tts compatibility
+          # Set minSdkVersion to 21
           if [ -f "android/app/build.gradle" ]; then
             sed -i 's/minSdkVersion = flutter.minSdkVersion/minSdkVersion = 21/g' android/app/build.gradle || true
             sed -i 's/minSdkVersion flutter.minSdkVersion/minSdkVersion 21/g' android/app/build.gradle || true
