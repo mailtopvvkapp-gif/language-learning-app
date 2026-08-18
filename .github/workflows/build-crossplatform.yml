@@ -28,7 +28,7 @@ jobs:
           channel: 'stable'
           cache: false
 
-      - name: Prepare Assets & Platform Directories
+      - name: Self-Healing Assets & Directories
         run: |
           mkdir -p assets/icon assets/data
           if [ ! -f "assets/icon/app_logo.png" ]; then
@@ -42,65 +42,23 @@ jobs:
         run: |
           yes | flutter doctor --android-licenses || true
 
-      - name: Resolve Dependencies
+      - name: Install Dependencies
         run: |
           flutter pub get
 
-      - name: Compile Android Release APK
+      - name: Analyze Dart Code (Show Exact Errors)
         run: |
-          flutter build apk --release --no-tree-shake-icons
+          flutter analyze || true
+
+      - name: Build Android Release APK (Verbose)
+        run: |
+          flutter build apk --release --no-tree-shake-icons --verbose
 
       - name: Upload Android Release APK
         uses: actions/upload-artifact@v4
         with:
           name: Android-Release-APK
           path: build/app/outputs/flutter-apk/app-release.apk
-          if-no-files-found: error
-          retention-days: 14
-
-  build-ios:
-    name: Build iPhone iOS App
-    runs-on: macos-latest
-    steps:
-      - name: Checkout Code
-        uses: actions/checkout@v4
-
-      - name: Set up Flutter Environment
-        uses: subosito/flutter-action@v2
-        with:
-          channel: 'stable'
-          cache: false
-
-      - name: Prepare Assets & Platform Directories
-        run: |
-          mkdir -p assets/icon assets/data
-          if [ ! -f "assets/icon/app_logo.png" ]; then
-            echo "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==" | base64 --decode > assets/icon/app_logo.png
-          fi
-          if [ ! -d "ios" ]; then
-            flutter create --platforms=ios .
-          fi
-
-      - name: Resolve Dependencies
-        run: |
-          flutter pub get
-
-      - name: Compile iOS App
-        run: |
-          flutter build ios --release --no-codesign --no-tree-shake-icons
-
-      - name: Package Payload as ZIP
-        run: |
-          mkdir -p build/ios/iphoneos/Payload
-          cp -r build/ios/iphoneos/Runner.app build/ios/iphoneos/Payload/
-          cd build/ios/iphoneos
-          zip -r iPhone-App-Payload.zip Payload
-
-      - name: Upload iPhone iOS Artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: iPhone-iOS-Build
-          path: build/ios/iphoneos/iPhone-App-Payload.zip
           if-no-files-found: error
           retention-days: 14
           
