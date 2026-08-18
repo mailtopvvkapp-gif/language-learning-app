@@ -19,8 +19,8 @@ class _TracingCanvasState extends State<TracingCanvas> {
         Text(
           widget.charToTrace,
           style: TextStyle(
-            fontSize: 200,
-            color: Colors.white.withOpacity(0.2),
+            fontSize: 180,
+            color: Colors.white.withOpacity(0.18),
             fontWeight: FontWeight.bold,
           ),
         ),
