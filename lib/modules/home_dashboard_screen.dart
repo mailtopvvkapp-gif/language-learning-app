@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_learning_app/core/language_provider.dart';
+import 'package:flutter_learning_app/modules/step1_letters/letters_screen.dart';
+import 'package:flutter_learning_app/modules/step2_words/basic_words_screen.dart';
 import 'package:flutter_learning_app/modules/step3_gunintalu/gunintalu_screen.dart';
 import 'package:flutter_learning_app/modules/step4_matra_words/matra_words_screen.dart';
 import 'package:flutter_learning_app/modules/assessments/quiz_screen.dart';
@@ -22,19 +24,27 @@ class HomeDashboardScreen extends StatelessWidget {
       body: ListView(
         padding: const EdgeInsets.all(20),
         children: [
-          _buildItem(context, 'Step 1: అక్షరాలు (Letters)', Icons.edit, Colors.blueAccent, () {}),
-          _buildItem(context, 'Step 2: సరళ పదాలు (Basic Words)', Icons.menu_book, Colors.teal, () {}),
-          _buildAssessment(context, '📝 Assessment 1 (Step 2 క్విజ్)', Colors.amber.shade800, () {
-            Navigator.push(context, MaterialPageRoute(builder: (_) => QuizScreen(items: provider.step2Words, quizTitle: 'Assessment 1')));
+          _buildItem(context, provider.step1Title, Icons.edit, Colors.blueAccent, () {
+            Navigator.push(context, MaterialPageRoute(builder: (_) => const LettersScreen()));
           }),
-          _buildItem(context, 'Step 3: గుణింతాలు (Gunintalu)', Icons.draw, Colors.deepPurpleAccent, () {
+          _buildItem(context, provider.step2Title, Icons.menu_book, Colors.teal, () {
+            Navigator.push(context, MaterialPageRoute(builder: (_) => const BasicWordsScreen()));
+          }),
+          _buildAssessment(context, provider.assessment1Title, Colors.amber.shade800, () {
+            Navigator.push(context, MaterialPageRoute(
+              builder: (_) => QuizScreen(items: provider.step2Words, quizTitle: provider.assessment1Title),
+            ));
+          }),
+          _buildItem(context, provider.step3Title, Icons.draw, Colors.deepPurpleAccent, () {
             Navigator.push(context, MaterialPageRoute(builder: (_) => const GunintaluScreen()));
           }),
-          _buildItem(context, 'Step 4: గుణింతాల పదాలు (Advanced Words)', Icons.auto_stories, Colors.indigoAccent, () {
+          _buildItem(context, provider.step4Title, Icons.auto_stories, Colors.indigoAccent, () {
             Navigator.push(context, MaterialPageRoute(builder: (_) => const MatraWordsScreen()));
           }),
-          _buildAssessment(context, '🏆 Final Assessment (Step 4 క్విజ్)', Colors.pinkAccent.shade400, () {
-            Navigator.push(context, MaterialPageRoute(builder: (_) => QuizScreen(items: provider.step4Words, quizTitle: 'Final Assessment')));
+          _buildAssessment(context, provider.finalAssessmentTitle, Colors.pinkAccent.shade400, () {
+            Navigator.push(context, MaterialPageRoute(
+              builder: (_) => QuizScreen(items: provider.step4Words, quizTitle: provider.finalAssessmentTitle),
+            ));
           }),
         ],
       ),
