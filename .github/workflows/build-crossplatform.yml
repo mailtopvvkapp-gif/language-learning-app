@@ -13,7 +13,7 @@ jobs:
     name: Build Android APK
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout Repository
+      - name: Checkout Code
         uses: actions/checkout@v4
 
       - name: Set up Java 17
@@ -22,22 +22,20 @@ jobs:
           distribution: 'temurin'
           java-version: '17'
 
-      - name: Set up Flutter Environment
+      - name: Set up Flutter
         uses: subosito/flutter-action@v2
         with:
           channel: 'stable'
           cache: false
 
-      - name: Self-Healing Platform Files & Fallback Icon
+      - name: Prepare Assets & Platform Directories
         run: |
-          # 1. assets/icon ఫోల్డర్ లేకపోతే డమ్మీ లోగోను తయారుచేస్తుంది
-          mkdir -p assets/icon
+          mkdir -p assets/icon assets/data
+          # డమ్మీ ఐకాన్ క్రియేట్ చేస్తుంది
           if [ ! -f "assets/icon/app_logo.png" ]; then
-            # 1x1 transparent PNG fallback byte
             echo "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==" | base64 --decode > assets/icon/app_logo.png
           fi
-
-          # 2. android ప్లాట్‌ఫారమ్ ఫైల్స్ లేకపోతే ఆటోమేటిక్‌గా క్రియేట్ చేస్తుంది
+          # android ఫోల్డర్ లేకపోతే కొత్తది క్రియేట్ చేస్తుంది
           if [ ! -d "android" ]; then
             flutter create --platforms=android .
           fi
@@ -46,13 +44,13 @@ jobs:
         run: |
           yes | flutter doctor --android-licenses || true
 
-      - name: Get Dependencies
+      - name: Fetch Dependencies
         run: |
           flutter pub get
 
-      - name: Build Android Release APK
+      - name: Compile Android APK
         run: |
-          flutter build apk --release
+          flutter build apk --release --no-tree-shake-icons
 
       - name: Upload Android Release APK
         uses: actions/upload-artifact@v4
@@ -66,33 +64,32 @@ jobs:
     name: Build iPhone iOS App
     runs-on: macos-latest
     steps:
-      - name: Checkout Repository
+      - name: Checkout Code
         uses: actions/checkout@v4
 
-      - name: Set up Flutter Environment
+      - name: Set up Flutter
         uses: subosito/flutter-action@v2
         with:
           channel: 'stable'
           cache: false
 
-      - name: Self-Healing Platform Files & Fallback Icon
+      - name: Prepare Assets & Platform Directories
         run: |
-          mkdir -p assets/icon
+          mkdir -p assets/icon assets/data
           if [ ! -f "assets/icon/app_logo.png" ]; then
             echo "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==" | base64 --decode > assets/icon/app_logo.png
           fi
-
           if [ ! -d "ios" ]; then
             flutter create --platforms=ios .
           fi
 
-      - name: Get Dependencies
+      - name: Fetch Dependencies
         run: |
           flutter pub get
 
-      - name: Build iOS Runner
+      - name: Compile iOS App
         run: |
-          flutter build ios --release --no-codesign
+          flutter build ios --release --no-codesign --no-tree-shake-icons
 
       - name: Package Payload as ZIP
         run: |
