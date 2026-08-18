@@ -4,15 +4,12 @@ class AudioFeedbackService {
   final FlutterTts _tts = FlutterTts();
 
   Future<void> initTTS(String languageCode) async {
-    // తెలుగు కోసం: 'te-IN', హిందీ కోసం: 'hi-IN', ఇంగ్లీష్ కోసం: 'en-US'
     await _tts.setLanguage(languageCode);
     await _tts.setPitch(1.0);
     await _tts.setSpeechRate(0.8);
   }
 
-  Future<void> explainError({
-    required String customMessage,
-  }) async {
+  Future<void> explainError({required String customMessage}) async {
     await _tts.stop();
     await _tts.speak(customMessage);
   }
