@@ -28,35 +28,27 @@ jobs:
           channel: 'stable'
           cache: false
 
-      - name: Ensure Assets and Files Exist
+      - name: Ensure Assets & Clean v2 Embedding
         run: |
           mkdir -p assets/icon assets/data
-          # డమ్మీ ఐకాన్
           if [ ! -f "assets/icon/app_logo.png" ]; then
             echo "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==" | base64 --decode > assets/icon/app_logo.png
           fi
-          # డమ్మీ డేటా ఫైల్స్ (ఖాళీ ఫోల్డర్ వల్ల క్రాష్ కాకుండా)
-          if [ ! -f "assets/data/telugu_content.json" ]; then
-            echo '{"step2_words":[], "step4_gunintalu_words":[]}' > assets/data/telugu_content.json
-          fi
-          if [ ! -f "assets/data/hindi_content.json" ]; then
-            echo '{"step2_words":[], "step4_gunintalu_words":[]}' > assets/data/hindi_content.json
-          fi
-          if [ ! -f "assets/data/english_content.json" ]; then
-            echo '{"step2_words":[], "step4_gunintalu_words":[]}' > assets/data/english_content.json
+          
+          # Delete outdated android folder if it uses v1 embedding and recreate with v2
+          if grep -rq "io.flutter.app.FlutterActivity" android/ 2>/dev/null; then
+            rm -rf android
           fi
 
-      - name: Clean & Prepare Android Native Files
-        run: |
           if [ ! -d "android" ]; then
             flutter create --platforms=android --org com.example .
           fi
+
+      - name: Configure Gradle & MinSdkVersion 21
+        run: |
           if [ -f "android/gradlew" ]; then
             chmod +x android/gradlew
           fi
-
-      - name: Set Android Min SDK 21
-        run: |
           if [ -f "android/app/build.gradle" ]; then
             sed -i 's/minSdkVersion = flutter.minSdkVersion/minSdkVersion = 21/g' android/app/build.gradle || true
             sed -i 's/minSdkVersion flutter.minSdkVersion/minSdkVersion 21/g' android/app/build.gradle || true
@@ -70,10 +62,10 @@ jobs:
           yes | flutter doctor --android-licenses || true
           flutter pub get
 
-      - name: Build Android APK
+      - name: Build Android Release APK
         run: flutter build apk --release --no-tree-shake-icons
 
-      - name: Upload APK
+      - name: Upload Android Release APK
         uses: actions/upload-artifact@v4
         with:
           name: Android-Release-APK
