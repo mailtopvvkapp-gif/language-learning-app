@@ -20,7 +20,7 @@ class _TracingCanvasState extends State<TracingCanvas> {
           widget.charToTrace,
           style: TextStyle(
             fontSize: 200,
-            color: Colors.grey.withOpacity(0.25),
+            color: Colors.white.withOpacity(0.2),
             fontWeight: FontWeight.bold,
           ),
         ),
@@ -49,9 +49,9 @@ class StrokePainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     Paint paint = Paint()
-      ..color = Colors.deepOrangeAccent
+      ..color = const Color(0xFFFF7675)
       ..strokeCap = StrokeCap.round
-      ..strokeWidth = 12.0;
+      ..strokeWidth = 14.0;
 
     for (int i = 0; i < points.length - 1; i++) {
       if (points[i] != null && points[i + 1] != null) {
