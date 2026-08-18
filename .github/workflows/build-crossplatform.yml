@@ -1,4 +1,4 @@
-name: Build Cross-Platform App
+name: Build Cross-Platform App (Android & iPhone)
 
 on:
   push:
@@ -10,6 +10,7 @@ permissions:
 
 jobs:
   build-android:
+    name: Build Android APK
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Code
@@ -27,14 +28,74 @@ jobs:
           channel: 'stable'
           cache: false
 
-      - name: Provision Missing Flutter Platform Files
+      - name: Provision Missing Android Platform Files
         run: |
-          # android ఫోల్డర్ లేకపోతే ఆటోమేటిక్‌గా క్రియేట్ చేస్తుంది
           if [ ! -d "android" ]; then
-            echo "Generating missing Android project files..."
             flutter create --platforms=android .
           fi
 
+      - name: Accept Android Licenses
+        run: |
+          yes | flutter doctor --android-licenses || true
+
+      - name: Resolve Dependencies
+        run: |
+          flutter pub get
+
+      - name: Build Android Release APK
+        run: |
+          flutter build apk --release
+
+      - name: Upload Android APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: Android-Release-APK
+          path: build/app/outputs/flutter-apk/app-release.apk
+          if-no-files-found: error
+          retention-days: 14
+
+  build-ios:
+    name: Build iPhone iOS App
+    runs-on: macos-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Set up Flutter Environment
+        uses: subosito/flutter-action@v2
+        with:
+          channel: 'stable'
+          cache: false
+
+      - name: Provision Missing iOS Platform Files
+        run: |
+          if [ ! -d "ios" ]; then
+            flutter create --platforms=ios .
+          fi
+
+      - name: Resolve Dependencies
+        run: |
+          flutter pub get
+
+      - name: Build iOS App (No CodeSign for Testing)
+        run: |
+          flutter build ios --release --no-codesign
+
+      - name: Package Payload as Installable ZIP
+        run: |
+          mkdir -p build/ios/iphoneos/Payload
+          cp -r build/ios/iphoneos/Runner.app build/ios/iphoneos/Payload/
+          cd build/ios/iphoneos
+          zip -r iPhone-App-Payload.zip Payload
+
+      - name: Upload iPhone iOS Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: iPhone-iOS-Build
+          path: build/ios/iphoneos/iPhone-App-Payload.zip
+          if-no-files-found: error
+          retention-days: 14
+          
       - name: Accept Android Licenses
         run: |
           yes | flutter doctor --android-licenses || true
