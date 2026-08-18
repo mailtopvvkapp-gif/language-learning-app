@@ -2,20 +2,16 @@ import 'package:flutter/material.dart';
 
 class RichImageCard extends StatelessWidget {
   final String word;
-  final String? imagePath;
   final double size;
 
   const RichImageCard({
     Key? key,
     required this.word,
-    this.imagePath,
     this.size = 140,
   }) : super(key: key);
 
-  // పదాల ఆధారంగా ఆటోమేటిక్ వెక్టర్ బొమ్మలు & కలర్ థీమ్స్
   Map<String, dynamic> _getGraphicData(String wordKey) {
     switch (wordKey.trim()) {
-      // Step 2 పదాలు (Telugu / Hindi / English)
       case 'కలము':
       case 'कलम':
       case 'PEN':
@@ -30,16 +26,6 @@ class RichImageCard extends StatelessWidget {
       case 'कमल':
       case 'LOTUS':
         return {'icon': '🪷', 'color': const Color(0xFFFD79A8), 'bg': const Color(0xFFE84393)};
-      case 'CAT':
-      case 'పిల్లి':
-      case 'बिल्ली':
-        return {'icon': '🐱', 'color': const Color(0xFFFDCB6E), 'bg': const Color(0xFFE17055)};
-      case 'DOG':
-      case 'కుక్క':
-      case 'कुत्ता':
-        return {'icon': '🐶', 'color': const Color(0xFFE17055), 'bg': const Color(0xFFD63031)};
-
-      // Step 4 గుణింతాల పదాలు
       case 'కాకి':
       case 'कौआ':
       case 'CROW':
@@ -57,15 +43,6 @@ class RichImageCard extends StatelessWidget {
       case 'मुर्गी':
       case 'HEN':
         return {'icon': '🐔', 'color': const Color(0xFFFF7675), 'bg': const Color(0xFFD63031)};
-      case 'SHIP':
-      case 'ఓడ':
-      case 'जहाज':
-        return {'icon': '🚢', 'color': const Color(0xFF0984E3), 'bg': const Color(0xFF74B9FF)};
-      case 'సూర్యుడు':
-      case 'सूरज':
-      case 'SUN':
-        return {'icon': '☀️', 'color': const Color(0xFFFEE140), 'bg': const Color(0xFFFA709A)};
-
       default:
         return {'icon': '🌟', 'color': const Color(0xFFA29BFE), 'bg': const Color(0xFF6C5CE7)};
     }
@@ -97,12 +74,7 @@ class RichImageCard extends StatelessWidget {
       child: Center(
         child: Text(
           graphic['icon'],
-          style: TextStyle(
-            fontSize: size * 0.52,
-            shadows: const [
-              Shadow(color: Colors.black38, offset: Offset(2, 4), blurRadius: 8),
-            ],
-          ),
+          style: TextStyle(fontSize: size * 0.52),
         ),
       ),
     );
